@@ -1,0 +1,26 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.frhubert78_ui.twa",
+      "sha256_cert_fingerprints": ["2E:AA:55:D2:4F:BF:B6:0D:48:05:95:1F:7A:D2:8D:1C:D8:7F:B6:D6:AE:1D:42:C0:1C:92:63:FB:01:D7:FC:94"]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.frhubert78_ui.entrainement",
+      "sha256_cert_fingerprints": ["76:15:53:C9:7A:64:E7:04:A6:F6:4E:64:FF:ED:73:CA:1A:5E:7E:1D:25:DB:83:4D:D6:95:07:EC:0A:D3:9F:E8"]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.frhubert78_ui.recettes",
+      "sha256_cert_fingerprints": ["DD:5C:AF:9E:74:A9:6D:E5:E1:7F:7F:A9:56:0E:F6:82:96:A9:27:AF:25:38:50:52:77:09:C7:1E:0D:ED:7D:6C"]
+    }
+  }
+]

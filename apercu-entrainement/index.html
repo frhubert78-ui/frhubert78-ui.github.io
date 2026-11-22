@@ -12,8 +12,9 @@ h1{font-size:22px;margin:0 0 4px}p.s{color:#9aa6b2;margin:0 0 16px;font-size:14p
 svg{width:100%;height:100%;display:block}
 h2{font-size:18px;margin:10px 2px 6px}
 .chips{display:flex;gap:6px;flex-wrap:wrap}.chip{font-size:12.5px;padding:3px 10px;border-radius:99px;background:rgba(166,255,61,.12);color:#b9ff6e;border:1px solid rgba(166,255,61,.3)}
+.mapbox{background:#0f1318;border:1px solid #232b35;border-radius:12px;padding:8px 6px 2px;margin:0 0 10px}.map{width:100%;height:auto;max-height:180px}
 </style></head><body><main>
-<h1>Nouvelles animations</h1><p class="s">Aperçu sur 4 exercices. Les muscles travaillés s'allument en vert pendant l'effort. À droite, la taille réelle dans l'appli.</p>
+<h1>Nouvelles animations</h1><p class="s">Aperçu sur 4 exercices. Les muscles travaillés s'allument en vert pendant l'effort, et la carte face/dos montre les zones ciblées. À droite, la taille réelle dans l'appli.</p>
 <div id="list"></div></main>
 <script>
 const POSES={
@@ -183,9 +184,25 @@ function frame(id,now){const an=ANIM[id],fr=an[0],n=fr.length,acts=SPEC[id].act;
  const a=poseArr(fr[i]),b=poseArr(fr[j]);return [a.map((v,k)=>v+(b[k]-v)*e),acts[i]+(acts[j]-acts[i])*e]}
 
 const poseArr=k=>{const a=[...(POSES[k]||POSES.debout)];a[22]=a[22]||0;return a};
+
+/* ===== Carte des muscles (face / dos) ===== */
+const ZONES={
+ F:{pec:"M38,34 Q50,30 62,34 L61,44 Q50,47 39,44 Z",delt:"M30,32 Q35,28 39,31 L37,41 Q31,40 29,36 Z|M70,32 Q65,28 61,31 L63,41 Q69,40 71,36 Z",
+  bic:"M28,42 L36,43 L35,55 L28,54 Z|M72,42 L64,43 L65,55 L72,54 Z",abs:"M43,47 L57,47 L56,66 L44,66 Z",obl:"M38,47 L43,48 L44,64 L39,62 Z|M62,47 L57,48 L56,64 L61,62 Z",
+  psoas:"M41,67 L49,69 L47,75 L40,72 Z|M59,67 L51,69 L53,75 L60,72 Z",quad:"M38,74 L48,76 L47,98 L39,97 Z|M62,74 L52,76 L53,98 L61,97 Z",avb:"M26,56 L33,57 L31,70 L25,69 Z|M74,56 L67,57 L69,70 L75,69 Z"},
+ B:{trap:"M41,26 Q50,24 59,26 L57,36 Q50,38 43,36 Z",delt:"M30,32 Q35,28 39,31 L37,41 Q31,40 29,36 Z|M70,32 Q65,28 61,31 L63,41 Q69,40 71,36 Z",
+  lat:"M38,38 L46,40 L46,56 L40,52 Z|M62,38 L54,40 L54,56 L60,52 Z",tri:"M28,42 L36,43 L35,55 L28,54 Z|M72,42 L64,43 L65,55 L72,54 Z",
+  lomb:"M44,56 L56,56 L56,66 L44,66 Z",fess:"M39,67 L50,68 L49,79 L39,77 Z|M61,67 L50,68 L51,79 L61,77 Z",ischio:"M39,80 L48,81 L47,98 L40,97 Z|M61,80 L52,81 L53,98 L60,97 Z",
+  mol:"M40,103 L47,103 L46,118 L41,118 Z|M60,103 L53,103 L54,118 L59,118 Z"}};
+const SIL="M50,8 a7,8 0 1 1 -0.1,0 M44,23 L56,23 L58,27 Q68,28 72,33 L77,56 L76,72 L71,72 L70,58 L66,44 L63,62 L63,72 L62,100 L60,122 L52,122 L51,100 L50,80 L49,100 L48,122 L40,122 L38,100 L37,72 L37,62 L34,44 L30,58 L29,72 L24,72 L23,56 L28,33 Q32,28 42,27 Z";
+function muscleMap(on){const fig=(side,dx,lbl)=>{let z="";for(const [k,d] of Object.entries(ZONES[side])){const a=on.includes(k);
+  for(const part of d.split("|"))z+=`<path d="${part}" fill="${a?G:"#2c3440"}" ${a?'filter="url(#mglow)"':''} opacity="${a?1:.9}"/>`}
+  return `<g transform="translate(${dx} 0)"><path d="${SIL}" fill="#3a4350"/>${z}<text x="50" y="132" text-anchor="middle" font-size="8" fill="#8b97a3">${lbl}</text></g>`};
+ return `<svg viewBox="0 0 200 136" class="map"><defs><filter id="mglow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${fig("F",0,"Face")}${fig("B",100,"Dos")}</svg>`}
+const ZMAP={sq_gob:["quad","fess"],sq_dl:["ischio","fess","lomb"],bx_jab:["delt","tri","obl"],s_psoas:["psoas","quad"]};
 const ids=Object.keys(SPEC);
-document.getElementById("list").innerHTML=ids.map(id=>`<div class="card"><div class="stage"><div class="big" data-a="${id}"></div><div class="small"><div data-a="${id}"></div><span>taille appli</span></div></div><h2>${SPEC[id].nom}</h2><div class="chips">${SPEC[id].chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div></div>`).join("");
-const els=[...document.querySelectorAll("[data-a]")];let last=0;
+document.getElementById("list").innerHTML=ids.map(id=>`<div class="card"><div class="stage"><div class="big" data-a="${id}"></div><div class="small"><div data-a="${id}"></div><span>taille appli</span></div></div><h2>${SPEC[id].nom}</h2><div class="mapbox">${muscleMap(ZMAP[id])}</div><div class="chips">${SPEC[id].chips.map(c=>`<span class="chip">${c}</span>`).join("")}</div></div>`).join("");
+const els=[...document.querySelectorAll("div[data-a]")];let last=0;
 function loop(t){if(t-last>33){last=t;for(const el of els){const id=el.dataset.a,[p,a]=frame(id,t);el.innerHTML=body(p,SPEC[id],a,SPEC[id].prop)}}requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 </script></body></html>

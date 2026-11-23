@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Aperçu – style squelette articulé</title><meta name="theme-color" content="#2b2d31">
+<style>body{margin:0;background:#2b2d31;color:#e8edf2;font-family:system-ui,sans-serif}main{max-width:480px;margin:0 auto;padding:18px 14px 40px}h1{font-size:22px;margin:0 0 4px}p.s{color:#a9b0b8;margin:0 0 16px;font-size:14px}
+.card{background:#34373c;border-radius:16px;padding:12px;margin:0 0 14px}.st{display:flex;gap:10px;align-items:flex-end}
+.big,.sm div{border-radius:12px;background:radial-gradient(ellipse at 50% 35%,#45484e,#26282c 80%);overflow:hidden}.big{flex:1;aspect-ratio:1}.sm{width:120px;flex:none}.sm div{width:120px;height:120px}.sm span{display:block;font-size:11px;color:#9aa1a9;text-align:center;margin-top:4px}
+svg{width:100%;height:100%;display:block}h2{font-size:18px;margin:10px 2px 0}</style></head><body><main><h1>Style squelette articulé</h1><p class="s">Inspiré de ton modèle : pièces pastel, rotules, crâne et cage thoracique. Les parties qui travaillent s'entourent de vert pendant l'effort.</p><div id="l"></div></main>
+<script>const EX={};const reduceMotion=false;const POSES={
+ debout:[50,14,50,25,50,53,45,39,44,53,55,39,56,53,48,72,47,91,52,72,53,91],
+ bras_haut:[50,16,50,27,50,55,44,15,42,4,56,15,58,4,48,74,47,91,52,74,53,91],
+ bras_cotes:[50,14,50,25,50,53,36,26,22,25,64,26,78,25,48,72,47,91,52,72,53,91],
+ mains_hanches:[50,14,50,25,50,53,38,36,45,50,62,36,55,50,48,72,47,91,52,72,53,91],
+ un_pied:[50,14,50,25,50,53,40,38,40,52,60,38,60,52,49,72,49,91,58,70,66,82],
+ tete_penchee:[44,16,50,26,50,54,45,40,44,54,58,20,46,10,48,73,47,91,52,73,53,91],
+ squat:[58,34,53,43,37,66,62,50,68,47,63,51,69,48,58,69,50,91,60,70,52,91],
+ squat_profond:[54,46,51,55,44,77,58,63,55,60,59,64,56,61,62,70,52,91,63,71,54,91],
+ squat_haut:[56,38,52,47,38,68,56,30,60,18,57,31,61,19,58,70,50,91,60,71,52,91],
+ charniere:[72,33,65,37,40,53,64,49,64,61,66,49,66,61,44,72,46,91,46,72,48,91],
+ charniere_tete:[72,33,65,37,40,53,62,30,70,28,63,31,71,29,44,72,46,91,46,72,48,91],
+ quatre:[82,49,72,55,36,56,72,72,72,89,73,72,73,89,36,89,16,89,37,89,17,89],
+ quatre_rot:[82,49,72,55,36,56,72,72,72,89,70,42,68,28,36,89,16,89,37,89,17,89],
+ fente_rot:[54,29,52,39,44,62,56,62,58,89,56,27,60,15,30,86,13,89,62,71,63,91],
+ fente:[45,27,45,38,44,62,52,51,60,64,53,51,61,64,30,86,13,89,62,71,63,91],
+ assis_9090:[50,47,50,58,50,83,40,72,36,85,60,72,64,85,30,85,40,90,72,84,72,92],
+ papillon:[50,49,50,60,50,84,40,74,48,88,60,74,52,88,30,80,46,90,70,80,54,90],
+ assis_v:[63,51,57,60,40,83,63,70,67,70,64,70,68,70,60,72,75,84,61,73,76,85],
+ allonge:[14,85,24,86,56,86,40,88,52,88,40,88,52,88,72,86,90,88,73,86,91,88],
+ genoux_poitrine:[14,85,24,86,52,86,38,76,52,70,38,76,52,70,52,68,64,76,53,69,65,77],
+ jambe_haut:[14,85,24,86,56,86,38,72,58,48,38,72,58,48,72,86,90,88,58,64,60,42],
+ figure4:[14,85,24,86,52,86,40,80,52,74,40,80,52,74,66,68,76,86,53,68,66,66],
+ torsion:[14,85,24,86,52,86,22,74,22,62,30,92,38,92,62,78,70,90,63,80,71,92],
+ enfant:[66,84,58,82,30,80,74,86,88,88,74,86,88,88,44,88,22,90,44,88,22,90],
+ mur_pec:[52,14,52,25,52,53,40,25,30,24,58,38,58,52,50,72,49,91,54,72,55,91],
+ planche:[84,62,75,65,44,70,75,88,87,88,76,88,88,88,28,78,12,87,29,79,13,88],
+ planche_cote:[84,58,75,62,44,70,75,80,75,89,76,46,76,30,28,78,12,88,29,79,13,88],
+ ischio_debout:[66,34,60,40,44,56,62,52,64,64,63,52,65,64,44,72,42,91,64,76,76,91],
+ quad_debout:[50,14,50,25,50,53,42,38,42,52,44,42,38,60,48,72,47,91,50,74,38,62],
+ mollet_mur:[72,24,68,33,48,56,78,32,88,30,79,33,89,31,40,74,30,91,58,72,60,91],
+ marche:[54,14,53,25,50,53,46,38,42,50,60,37,64,47,42,71,34,86,58,70,62,86],
+ marche_pente:[57,15,55,26,50,53,48,39,44,50,62,37,66,46,42,72,36,84,58,70,64,80],
+ halo:[50,14,50,26,50,54,38,18,46,6,62,18,54,6,48,73,47,91,52,73,53,91],
+ bucheron:[50,15,50,26,50,54,58,18,66,8,60,19,67,9,46,73,45,91,54,73,55,91],
+ tc_ouverture:[50,16,50,27,50,56,44,36,40,28,56,36,60,28,46,74,45,91,54,74,55,91],
+ tc_nuages:[50,14,50,25,50,54,40,28,46,18,60,44,56,54,46,73,42,91,54,73,58,91],
+ tc_pousser:[56,16,55,27,50,55,62,32,72,30,63,33,73,31,40,74,32,91,62,73,64,91],
+ tc_ballon:[50,14,50,25,50,54,40,40,42,52,60,40,58,52,46,73,45,91,54,73,55,91],
+ tc_ventre:[50,14,50,25,50,54,40,42,48,52,60,42,52,52,46,73,45,91,54,73,55,91],
+ garde:[52,14,50,25,48,53,58,38,60,25,56,40,63,28,42,72,35,91,56,72,61,91],
+ direct:[53,15,51,26,48,53,58,38,60,25,66,26,81,25,42,72,35,91,56,72,61,91],
+ crochet:[52,15,50,26,48,53,60,24,70,30,56,40,62,28,42,72,35,91,56,72,61,91],
+ uppercut:[53,17,51,28,48,55,58,40,60,27,62,44,68,27,42,73,35,91,56,73,61,91],
+ esquive:[58,27,54,37,46,59,62,46,64,34,60,48,67,36,40,75,33,91,58,75,62,91],
+ patte:[53,15,51,26,48,53,58,38,60,25,66,26,80,25,42,72,35,91,56,72,61,91]};
+/* ---- poses dérivées pour les animations ---- */
+const P=(b,o)=>{const a=[...(Array.isArray(b)?b:POSES[b])];a[22]=a[22]||0;for(const k in o){if(k==="bend")a[22]=o[k];else{a[k*2]=o[k][0];a[k*2+1]=o[k][1]}}return a};
+const MIR=b=>{const a=[...POSES[b]];for(let i=0;i<22;i+=2)a[i]=100-a[i];return a};
+const SH=(b,dy)=>{const a=[...(Array.isArray(b)?b:POSES[b])];for(let i=1;i<22;i+=2)a[i]+=dy;return a};
+Object.assign(POSES,{
+ souple:P("debout",{0:[50,16],1:[50,27],2:[50,55],3:[42,40],4:[42,52],5:[58,40],6:[58,52],7:[47,74],9:[53,74]}),
+ tc_bas:P("tc_ouverture",{0:[50,19],1:[50,30],2:[50,59],3:[42,46],4:[44,56],5:[58,46],6:[56,56],7:[45,76],9:[55,76]}),
+ tc_nuages_m:MIR("tc_nuages"),
+ tc_pousser_arr:P("tc_pousser",{0:[50,16],1:[49,27],2:[45,55],3:[54,38],4:[60,32],5:[55,39],6:[61,33]}),
+ tc_ballon_ouv:P("tc_ballon",{3:[34,40],4:[32,52],5:[66,40],6:[68,52]}),
+ bras_avant:P("debout",{3:[57,30],4:[69,31],5:[58,30],6:[70,30]}),
+ squat_bras:P("squat",{3:[64,44],4:[76,42],5:[65,45],6:[77,43]}),
+ debout_tete:P("debout",{3:[58,22],4:[56,12],5:[60,23],6:[57,13]}),
+ debout_gob:P("debout",{3:[56,40],4:[58,34],5:[57,41],6:[59,35]}),
+ debout_kb:P("debout",{3:[51,40],4:[52,55],5:[52,40],6:[53,55]}),
+ un_pied2:P("un_pied",{10:[70,78]}),
+ hanche_g:P("mains_hanches",{0:[52,14],1:[51,25],2:[45,53],7:[45,72],9:[50,72]}),
+ hanche_d:P("mains_hanches",{0:[48,14],1:[49,25],2:[55,53],7:[50,72],9:[55,72]}),
+ bras_cotes_h:P("bras_cotes",{3:[36,22],4:[22,17],5:[64,22],6:[78,17]}),
+ quatre_creux:P("quatre",{0:[84,44],bend:6}),
+ quatre_rond:P("quatre",{0:[79,60],bend:-8}),
+ quatre_fil:P("quatre",{5:[62,70],6:[54,78]}),
+ fente_mains:P("fente_rot",{5:[60,62],6:[62,89]}),
+ assis_9090_p:P("assis_9090",{0:[42,56],1:[44,65]}),
+ squat_profond2:P("squat_profond",{0:[54,48],1:[51,57]}),
+ allonge_in:P("allonge",{bend:-3}),
+ genoux_poitrine2:P("genoux_poitrine",{7:[48,66],8:[58,72],9:[49,67],10:[59,73],4:[48,70],6:[48,70]}),
+ jambe_mi:P("jambe_haut",{9:[66,70],10:[80,58],4:[64,64],6:[64,64]}),
+ figure4_p:P("figure4",{7:[60,64],8:[70,80],9:[48,62],10:[62,60]}),
+ allonge_genoux:P("torsion",{7:[56,72],8:[66,86],9:[57,73],10:[67,87]}),
+ fente_av:P("fente",{0:[49,27],1:[49,38],2:[49,63],9:[65,72]}),
+ papillon_p:P("papillon",{0:[50,58],1:[50,66]}),
+ enfant_in:P("enfant",{bend:-4}),
+ mur_pec2:P("mur_pec",{0:[56,14],1:[55,25],2:[54,53]}),
+ mollet_mur2:P("mollet_mur",{0:[76,26],1:[71,34],2:[52,56],9:[62,72]}),
+ halo_g:P("halo",{3:[36,22],4:[40,10],5:[50,18],6:[46,8]}),
+ halo_d:P("halo",{3:[50,18],4:[54,8],5:[64,22],6:[60,10]}),
+ bucheron_bas:P("bucheron",{0:[44,30],1:[46,40],2:[48,60],3:[40,56],4:[34,66],5:[41,57],6:[35,67],7:[44,76],9:[56,76]}),
+ debout_haut:P("debout",{3:[46,15],4:[48,4],5:[54,15],6:[52,4]}),
+ assis_v_g:P("assis_v",{3:[54,68],4:[56,68],5:[55,69],6:[58,69]}),
+ assis_v_d:P("assis_v",{3:[68,66],4:[74,66],5:[69,67],6:[75,67]}),
+ planche2:P("planche",{bend:-2}),
+ marche2:P("marche",{3:[60,37],4:[64,47],5:[46,38],6:[42,50],7:[58,70],8:[62,86],9:[42,71],10:[34,86]}),
+ marche_pente2:P("marche_pente",{3:[62,37],4:[66,46],5:[48,39],6:[44,50],7:[58,70],8:[64,80],9:[42,72],10:[36,84]}),
+ garde_saut:SH("garde",-4),
+ jab:P("garde",{3:[66,27],4:[80,26]}),
+ uppercut_av:P("garde",{3:[60,42],4:[66,26]})
+});
+POSES.bras_av2=P("bras_avant",{6:[70,37]});
+/* exercice -> [images clés, durée d'un cycle en secondes] */
+const ANIM={
+ tc_arbre:[["debout","souple"],8],tc_ouv:[["tc_bas","tc_ouverture"],8],tc_nuages:[["tc_nuages","tc_nuages_m"],6],
+ tc_pousser:[["tc_pousser_arr","tc_pousser"],8],tc_ballon:[["tc_ballon","tc_ballon_ouv"],8],tc_ferm:[["tc_ouverture","tc_ventre"],8],
+ sq_poids:[["bras_avant","squat_bras"],3],sq_charn:[["debout_tete","charniere_tete"],3],sq_gob:[["debout_gob","squat"],4],sq_dl:[["debout_kb","charniere"],4],
+ m_resp:[["debout","bras_haut"],8],m_chev:[["un_pied","un_pied2"],1.6],m_hanch:[["hanche_g","mains_hanches","hanche_d","mains_hanches"],3],
+ m_epaul:[["bras_cotes","bras_cotes_h"],1.4],m_chat:[["quatre_creux","quatre_rond"],6],m_thor:[["quatre_fil","quatre_rot"],4],
+ m_wgs:[["fente_mains","fente_rot"],4],m_9090:[["assis_9090","assis_9090_p"],6],m_sqprof:[["squat_profond","squat_profond2"],6],m_gm:[["debout_tete","charniere_tete"],3],
+ s_resp:[["allonge","allonge_in"],8],s_genoux:[["genoux_poitrine","genoux_poitrine2"],4],s_ischio:[["jambe_mi","jambe_haut"],8],
+ s_fig4:[["figure4","figure4_p"],8],s_tors:[["allonge_genoux","torsion"],8],s_psoas:[["fente","fente_av"],8],s_papil:[["papillon","papillon_p"],8],
+ s_enfant:[["enfant","enfant_in"],8],s_pec:[["mur_pec","mur_pec2"],8],s_cou:[["debout","tete_penchee"],8],
+ st_ischio:[["debout","ischio_debout"],6],st_quad:[["debout","quad_debout"],6],st_mollet:[["mollet_mur","mollet_mur2"],6],
+ b_halo:[["halo_g","halo","halo_d"],3],b_buch:[["bucheron","bucheron_bas"],3],b_squat:[["debout_haut","squat_haut"],4],
+ b_rus:[["assis_v_g","assis_v_d"],2.5],b_planche:[["planche","planche2"],4],b_cote:[["planche_cote"],4],
+ t_echauf:[["marche","marche2"],1.3],t_rapide:[["marche","marche2"],.9],t_pente:[["marche_pente","marche_pente2"],1.1],t_retour:[["marche","marche2"],1.5],
+ bx_saut:[["garde","garde_saut"],.5],bx_echauf:[["bras_cotes","bras_cotes_h"],1.5],
+ bx_jab:[["garde","jab","garde","direct"],1.6],bx_croc:[["garde","jab","direct","crochet","garde","esquive"],3],
+ bx_upp:[["garde","uppercut","garde","uppercut_av","crochet"],2.5],bx_combo:[["garde","jab","direct","crochet","esquive","direct"],2.8],
+ bx_def:[["garde","esquive","garde","jab","direct"],2.6],bx_vit:[["garde","jab","garde","direct"],.8],
+ dx_12:[["garde","jab","garde","direct"],1.8],dx_123:[["garde","jab","direct","crochet"],2.4],dx_upp:[["garde","jab","direct","uppercut"],2.4],
+ dx_libre:[["garde","jab","direct","crochet","garde","esquive"],3],dx_echange:[["debout","souple"],4],
+ bx_av:[["bras_avant","bras_av2"],6],repos:[["debout","souple"],4]};
+const PROPX={b_halo:"ball",b_buch:"ball",b_squat:"ball",b_rus:"ball",sq_gob:"kb",sq_dl:"kb2",s_pec:"wall:28",st_mollet:"wall:91",
+ t_echauf:"tread",t_rapide:"tread",t_retour:"tread",t_pente:"tread2",dx_12:"pad",dx_123:"pad",dx_upp:"pad",dx_libre:"pad",
+ m_chat:"mat",m_thor:"mat",m_9090:"mat",s_resp:"mat",s_genoux:"mat",s_ischio:"mat",s_fig4:"mat",s_tors:"mat",s_enfant:"mat",s_papil:"mat",b_rus:"mat",b_planche:"mat",b_cote:"mat"};
+
+/* ===== Silhouette anatomique : muscles travaillés en vert ===== */
+const GL="#a6ff3d";
+const MUSC={
+ tc_arbre:["abdo:1-2F,quad:2-9F,quad:2-7F",[.4,.6]],tc_ouv:["delt:1-5F,delt:1-3F,quad:2-9F,quad:2-7F",[.4,.9]],tc_nuages:["obl:1-2F,delt:1-5F,delt:1-3F",[.5,.8]],
+ tc_pousser:["quad:2-9F,delt:1-5F,tri:1-5B",[.3,1]],tc_ballon:["delt:1-5F,pec:1-2F",[.4,.8]],tc_ferm:["abdo:1-2F",[.4,.7]],
+ sq_poids:["quad:2-9F,quad:2-7F,fess:2-9B,fess:2-7B",[.15,1]],sq_charn:["ischio:2-9B,ischio:2-7B,fess:2-9B,lomb:1-2B",[.2,1]],
+ sq_gob:["quad:2-9F,quad:2-7F,fess:2-9B,fess:2-7B",[.15,1]],sq_dl:["ischio:2-9B,ischio:2-7B,fess:2-9B,lomb:1-2B",[.25,1]],
+ m_resp:["delt:1-5F,abdo:1-2F",[.3,.8]],m_chev:["mollet:9-10B",[.5,.9]],m_hanch:["fess:2-9B,obl:1-2F,lomb:1-2B",[.5,.8,.5,.8]],
+ m_epaul:["delt:1-5F,delt:1-3F",[.4,.9]],m_chat:["lomb:1-2B,abdo:1-2F,dos:1-2B",[.6,1]],m_thor:["dos:1-2B,obl:1-2F",[.4,1]],
+ m_wgs:["psoas:1-2F,quad:2-7F,obl:1-2F",[.5,1]],m_9090:["fess:2-9B,fess:2-7B",[.5,1]],m_sqprof:["fess:2-9B,quad:2-9F,mollet:9-10B",[.7,.9]],
+ m_gm:["ischio:2-9B,ischio:2-7B,lomb:1-2B",[.2,1]],s_resp:["abdo:1-2F",[.3,.8]],s_genoux:["lomb:1-2B,fess:2-9B",[.5,.9]],
+ s_ischio:["ischio:2-9B",[.4,1]],s_fig4:["fess:2-9B,fess:2-7B",[.5,1]],s_tors:["obl:1-2F,lomb:1-2B,pec:1-2F",[.4,1]],
+ s_psoas:["quad:2-7F,psoas:1-2F",[.45,1]],s_papil:["quad:2-9F,quad:2-7F",[.5,.9]],s_enfant:["lomb:1-2B,dos:1-2B",[.5,.9]],
+ s_pec:["pec:1-2F,delt:1-3F",[.5,1]],s_cou:["dos:1-2B",[.4,.9]],st_ischio:["ischio:2-9B",[.3,1]],st_quad:["quad:2-9F",[.3,1]],
+ st_mollet:["mollet:7-8B",[.4,1]],b_halo:["delt:1-5F,delt:1-3F,abdo:1-2F",[.6,.9,.6]],b_buch:["obl:1-2F,delt:1-5F,fess:2-9B",[.4,1]],
+ b_squat:["quad:2-9F,quad:2-7F,fess:2-9B,delt:1-5F",[.3,1]],b_rus:["obl:1-2F,abdo:1-2F",[.6,1]],b_planche:["abdo:1-2F,delt:1-5F",[.85,1]],
+ b_cote:["obl:1-2F",[1]],t_echauf:["quad:2-9F,mollet:9-10B,ischio:2-7B",[.5,.6]],t_rapide:["quad:2-9F,mollet:9-10B,ischio:2-7B",[.7,.85]],
+ t_pente:["fess:2-9B,fess:2-7B,mollet:9-10B,quad:2-9F",[.8,1]],t_retour:["quad:2-9F,mollet:9-10B",[.3,.4]],
+ bx_saut:["mollet:9-10B,mollet:7-8B,quad:2-9F",[.4,.9]],bx_echauf:["delt:1-5F,delt:1-3F,avb:5-6F",[.4,.8]],
+ bx_jab:["delt:1-5F,delt:1-3F,tri:1-5B,tri:1-3B,obl:1-2F",[.2,1,.2,1]],bx_croc:["delt:1-5F,delt:1-3F,obl:1-2F,pec:1-2F",[.2,1,1,1,.2,.6]],
+ bx_upp:["bic:1-5F,delt:1-3F,quad:2-9F,obl:1-2F",[.2,1,.2,1,1]],bx_combo:["delt:1-5F,delt:1-3F,tri:1-5B,obl:1-2F",[.2,1,1,1,.6,1]],
+ bx_def:["quad:2-9F,quad:2-7F,obl:1-2F,delt:1-3F",[.2,.8,.2,1,1]],bx_vit:["delt:1-5F,delt:1-3F,tri:1-5B,tri:1-3B",[.2,1,.2,1]],
+ dx_12:["delt:1-5F,delt:1-3F,tri:1-5B,tri:1-3B",[.2,1,.2,1]],dx_123:["delt:1-5F,delt:1-3F,obl:1-2F,tri:1-3B",[.2,1,1,1]],
+ dx_upp:["delt:1-5F,delt:1-3F,bic:1-5F,quad:2-9F",[.2,1,1,1]],dx_libre:["delt:1-5F,delt:1-3F,obl:1-2F,quad:2-9F",[.2,1,1,1,.2,.8]],
+ dx_echange:["",[0,0]],bx_av:["avb:5-6F",[.4,1]],repos:["",[0,0]]};
+const MSH={quad:[.45,.62,.42],ischio:[.48,.62,.4],fess:[.12,.5,.55],tri:[.5,.6,.35],bic:[.5,.6,.35],delt:[.12,.42,.55],lomb:[.72,.45,.32],obl:[.55,.5,.3],
+ psoas:[.88,.35,.3],abdo:[.6,.38,.3],pec:[.24,.34,.38],dos:[.32,.5,.36],mollet:[.32,.55,.45],avb:[.38,.6,.35]};
+const TORSO=new Set(["lomb","obl","psoas","abdo","pec","dos"]);
+const parseM=s=>s?s.split(",").map(x=>{const [k,r]=x.split(":"),side=r.slice(-1),[a,b]=r.slice(0,-1).split("-").map(Number);return [k,a,b,side]}):[];
+const MPARSED={};for(const k in MUSC)MPARSED[k]=parseM(MUSC[k][0]);
+const f1=v=>v.toFixed(1);
+function sg2(p,a,b){const ax=p[a*2],ay=p[a*2+1],bx=p[b*2],by=p[b*2+1],dx=bx-ax,dy=by-ay,L=Math.hypot(dx,dy)||1;return {ax,ay,bx,by,dx:dx/L,dy:dy/L,L,nx:dy/L,ny:-dx/L}}
+function limb2(p,a,b,w1,w2,fill){const s=sg2(p,a,b),q=[[s.ax+s.nx*w1/2,s.ay+s.ny*w1/2],[s.bx+s.nx*w2/2,s.by+s.ny*w2/2],[s.bx-s.nx*w2/2,s.by-s.ny*w2/2],[s.ax-s.nx*w1/2,s.ay-s.ny*w1/2]];
+ return `<polygon points="${q.map(v=>f1(v[0])+","+f1(v[1])).join(" ")}" fill="${fill}"/><circle cx="${f1(s.ax)}" cy="${f1(s.ay)}" r="${f1(w1/2)}" fill="${fill}"/><circle cx="${f1(s.bx)}" cy="${f1(s.by)}" r="${f1(w2/2)}" fill="${fill}"/>`}
+const LW={1:[7.4,5.4],3:[5.6,4],2:[12.5,7.6],7:[7.8,5]};
+function segW(a,b){return a===1&&b===2?16:a===2?12.5:a===1?7.2:(b===8||b===10)?7.8:5.6}
+function muscle2(p,m,act){const [k,a,b,side]=m,[t,len,wd]=MSH[k],s=sg2(p,a,b),sg=side==="F"?1:-1,w=segW(a,b),off=TORSO.has(k)?w*.38:w*.24;
+ const cx=s.ax+(s.bx-s.ax)*t+s.nx*off*sg,cy=s.ay+(s.by-s.ay)*t+s.ny*off*sg,ang=Math.atan2(s.dy,s.dx)*180/Math.PI,rx=s.L*len/2,ry=w*wd*.62;
+ return `<g transform="translate(${f1(cx)} ${f1(cy)}) rotate(${f1(ang)})" opacity="${(0.18+0.82*act).toFixed(2)}"><ellipse rx="${f1(rx)}" ry="${f1(ry)}" fill="${GL}" filter="url(#mglow)"/><ellipse rx="${f1(rx*.8)}" ry="${f1(ry*.7)}" fill="#d8ff9e" opacity=".55"/></g>`}
+function propSVG(p,pr){if(!pr)return "";
+ const mx=(p[8]+p[12])/2,my=(p[9]+p[13])/2;
+ if(pr==="ball")return `<circle cx="${f1(mx)}" cy="${f1(my-4)}" r="6" fill="#c0522f" stroke="#7a2e16" stroke-width=".8"/>`;
+ if(pr==="kb")return `<rect x="${f1(mx-4.5)}" y="${f1(my-4)}" width="9" height="10" rx="2.5" fill="#2a2e35" stroke="#666" stroke-width=".6"/>`;
+ if(pr==="kb2")return `<rect x="${f1(p[12]-4)}" y="${f1(p[13])}" width="8" height="8" rx="2" fill="#2a2e35" stroke="#666" stroke-width=".6"/>`;
+ if(pr.startsWith("wall:")){const a=pr.slice(5);return `<rect x="${a-1.5}" y="4" width="3" height="90" fill="#3a4350"/>`}
+ if(pr==="pad")return `<rect x="84" y="15" width="10" height="21" rx="3" fill="#c0392b" stroke="#7a1f16" stroke-width=".8"/>`;
+ if(pr==="mat")return `<rect x="3" y="91.5" width="94" height="3" rx="1.5" fill="#2f5d4a"/>`;
+ if(pr==="tread")return `<rect x="8" y="91" width="84" height="4" rx="2" fill="#2a2e35"/><polyline points="82,92 78,40 70,40" stroke="#4a525c" stroke-width="2.5" fill="none"/>`;
+ if(pr==="tread2")return `<polygon points="8,95 92,82 92,86 8,99" fill="#2a2e35"/><polyline points="82,83 78,36 70,36" stroke="#4a525c" stroke-width="2.5" fill="none"/>`;
+ return ""}
+function anatSVG(p,mus,act,pr){
+ const NEAR="url(#skin)",FAR="#8a5d43",SHORT="#1d2026";
+ const s=sg2(p,1,2),n=[s.nx,s.ny],S=[p[2],p[3]],H=[p[4],p[5]],at=(t,o)=>[S[0]+(H[0]-S[0])*t+n[0]*o,S[1]+(H[1]-S[1])*t+n[1]*o],P=q=>f1(q[0])+","+f1(q[1]);
+ const M=f=>mus.filter(f).map(m=>muscle2(p,m,act)).join("");
+ const behind=pr==="kb2"||pr==="mat"||(pr&&pr.startsWith("tread"))||(pr&&pr.startsWith("wall"));
+ let x=behind?propSVG(p,pr):"";
+ x+=limb2(p,1,3,...LW[1],FAR)+limb2(p,3,4,...LW[3],FAR)+limb2(p,2,7,...LW[2],FAR)+limb2(p,7,8,...LW[7],FAR)+M(m=>[3,4,7,8].includes(m[2]));
+ x+=`<path d="M${P(at(-.06,7.5))} Q${P(at(.3,10.5))} ${P(at(.62,7))} L${P(at(1,7))} L${P(at(1.06,-8.2))} Q${P(at(.55,-7.4))} ${P(at(0,-8.6))} Q${P(at(-.12,0))} ${P(at(-.06,7.5))} Z" fill="${NEAR}"/>`+M(m=>m[1]===1&&m[2]===2);
+ x+=`<circle cx="${f1(H[0])}" cy="${f1(H[1])}" r="9" fill="${SHORT}"/>`+limb2(p,2,9,...LW[2],NEAR)+limb2(p,9,10,...LW[7],NEAR);
+ const t=sg2(p,2,9);x+=`<polygon points="${P([H[0]+t.nx*6.6,H[1]+t.ny*6.6])} ${P([H[0]+t.dx*t.L*.42+t.nx*6.2,H[1]+t.dy*t.L*.42+t.ny*6.2])} ${P([H[0]+t.dx*t.L*.42-t.nx*6.2,H[1]+t.dy*t.L*.42-t.ny*6.2])} ${P([H[0]-t.nx*6.6,H[1]-t.ny*6.6])}" fill="${SHORT}"/>`;
+ x+=M(m=>m[2]===9||m[2]===10);
+ x+=`<path d="M${P(S)} L${f1(p[0])},${f1(p[1]+3)}" stroke="#c99470" stroke-width="5" stroke-linecap="round"/><ellipse cx="${f1(p[0])}" cy="${f1(p[1])}" rx="5.2" ry="6" fill="url(#skin)"/>`;
+ x+=limb2(p,1,5,...LW[1],NEAR)+limb2(p,5,6,...LW[3],NEAR)+M(m=>m[2]===5||m[2]===6);
+ if(!behind)x+=propSVG(p,pr);
+ return `<svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="skin" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#f1c9a5"/><stop offset=".6" stop-color="#d49d77"/><stop offset="1" stop-color="#a8714f"/></radialGradient><filter id="mglow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+ <rect x="0" y="86" width="100" height="14" fill="${GL}" opacity=".07"/><line x1="4" y1="93.5" x2="96" y2="93.5" stroke="${GL}" stroke-opacity=".35" stroke-width=".8"/>${x}</svg>`}
+function actAt(id,now){const an=ANIM[id]||[[EX[id]?EX[id][1]:"debout"],4],n=an[0].length,acts=(MUSC[id]||["",[]])[1];
+ const A=i=>acts.length?acts[Math.min(i,acts.length-1)]:(i%2?1:.3);if(n===1||reduceMotion)return A(Math.min(1,n-1));
+ const ph=((now/1000)%an[1])/an[1]*n,i=Math.floor(ph),f=ph-i,e=(1-Math.cos(Math.PI*f))/2;return A(i)+(A((i+1)%n)-A(i))*e}
+
+/* ===== Squelette articulé façon mannequin 3D ===== */
+const SK={skull:"#9cc7dc",neck:"#8fb3cf",rib:"#e3a487",spine:"#e28f8f",pelvis:"#b9d88e",uarm:"#9fdcc4",farm:"#a7a4e0",hand:"#efb08f",thigh:"#9fdcc4",knee:"#d79bd0",shin:"#c9c98c",foot:"#e6a3c8",joint:"#e8c6a0"};
+const ZONE={quad:"thigh",ischio:"thigh",fess:"pelvis",mollet:"shin",delt:"shoulder",tri:"uarm",bic:"uarm",avb:"farm",psoas:"pelvis",lomb:"rib",obl:"rib",abdo:"rib",pec:"rib",dos:"rib"};
+function shade(id,c){return `<radialGradient id="${id}" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".45" stop-color="${c}"/><stop offset="1" stop-color="${c}" stop-opacity="1"/></radialGradient>`}
+function bone(p,a,b,w1,w2,fill,glow){const s=sg2(p,a,b),wm=Math.min(w1,w2)*.62,q=[[s.ax+s.nx*w1/2,s.ay+s.ny*w1/2],[s.ax+s.dx*s.L*.5+s.nx*wm/2,s.ay+s.dy*s.L*.5+s.ny*wm/2],[s.bx+s.nx*w2/2,s.by+s.ny*w2/2],[s.bx-s.nx*w2/2,s.by-s.ny*w2/2],[s.ax+s.dx*s.L*.5-s.nx*wm/2,s.ay+s.dy*s.L*.5-s.ny*wm/2],[s.ax-s.nx*w1/2,s.ay-s.ny*w1/2]];
+ const d=`M${f1(q[0][0])},${f1(q[0][1])} Q${f1(q[1][0])},${f1(q[1][1])} ${f1(q[2][0])},${f1(q[2][1])} L${f1(q[3][0])},${f1(q[3][1])} Q${f1(q[4][0])},${f1(q[4][1])} ${f1(q[5][0])},${f1(q[5][1])} Z`;
+ return (glow?`<path d="${d}" fill="none" stroke="${GL}" stroke-width="3.2" opacity="${glow}" filter="url(#mglow)"/>`:"")+`<path d="${d}" fill="${fill}"/>`}
+const ball=(x,y,r,fill,glow)=>(glow?`<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(r+1.4)}" fill="${GL}" opacity="${glow}" filter="url(#mglow)"/>`:"")+`<circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(r)}" fill="${fill}"/>`;
+function skelSVG(p,mus,act,pr){
+ const z={};for(const m of mus){const k=ZONE[m[0]],near=[5,6,9,10].includes(m[2])||(m[1]===1&&m[2]===2);z[k+(near?"N":"F")]=1;if(m[1]===1&&m[2]===2)z[k+"F"]=1}
+ const g=k=>z[k]?(0.25+0.75*act).toFixed(2):0, F="url(#f_",N="url(#n_";
+ const s=sg2(p,1,2),n=[s.nx,s.ny],S=[p[2],p[3]],H=[p[4],p[5]],at=(t,o)=>[S[0]+(H[0]-S[0])*t+n[0]*o,S[1]+(H[1]-S[1])*t+n[1]*o],P=q=>f1(q[0])+","+f1(q[1]);
+ const behind=pr==="kb2"||pr==="mat"||(pr&&pr.startsWith("tread"))||(pr&&pr.startsWith("wall"));
+ let x=behind?propSVG(p,pr):"";
+ const leg=(k,f,pre,side)=>{const kx=p[k*2],ky=p[k*2+1],fx=p[f*2],fy=p[f*2+1],t=sg2(p,k,f);
+  return bone(p,2,k,6.2,5,pre+"thigh)",g("thigh"+side))+bone(p,k,f,5,4,pre+"shin)",g("shin"+side))+ball(kx,ky,3.6,pre+"knee)")+
+   `<path d="M${f1(fx-1.5)},${f1(fy-3)} Q${f1(fx+6)},${f1(fy-2.5)} ${f1(fx+9)},${f1(fy+1.8)} L${f1(fx-2.5)},${f1(fy+2)} Z" fill="${pre}foot)"/>`+ball(fx,fy-1.5,1.8,pre+"joint)")};
+ const arm=(e,w,pre,side)=>bone(p,1,e,4.6,3.6,pre+"uarm)",g("uarm"+side))+bone(p,e,w,3.6,2.8,pre+"farm)",g("farm"+side))+ball(p[e*2],p[e*2+1],2.4,pre+"joint)")+
+   `<ellipse cx="${f1(p[w*2]+(p[w*2]-p[e*2])*.18)}" cy="${f1(p[w*2+1]+(p[w*2+1]-p[e*2+1])*.18)}" rx="2.6" ry="3.6" transform="rotate(${f1(Math.atan2(p[w*2+1]-p[e*2+1],p[w*2]-p[e*2])*180/Math.PI-90)} ${f1(p[w*2])} ${f1(p[w*2+1])})" fill="${pre}hand)"/>`+ball(S[0],S[1],2.8,pre+"joint)",g("shoulder"+side));
+ x+=arm(3,4,F,"F")+leg(7,8,F,"F");
+ /* bassin */
+ x+=(g("pelvisF")||g("pelvisN")?`<ellipse cx="${f1(H[0])}" cy="${f1(H[1])}" rx="9" ry="7" fill="${GL}" opacity="${g("pelvisF")||g("pelvisN")}" filter="url(#mglow)"/>`:"")+
+  `<path d="M${P(at(.86,6.5))} Q${P(at(1.02,9))} ${P(at(1.14,3))} L${P(at(1.1,-6.5))} Q${P(at(.9,-8))} ${P(at(.84,-4))} Z" fill="url(#n_pelvis)"/>`;
+ /* colonne + cage thoracique */
+ x+=`<path d="M${f1(p[0])},${f1(p[1]+4)} Q${P(at(-.2,-3.5))} ${P(at(0,-3))} Q${P(at(.55,-4.8))} ${P(at(.95,-2))}" stroke="${SK.spine}" stroke-width="2.8" fill="none" stroke-linecap="round"/>`;
+ const rib=`M${P(at(-.02,4))} Q${P(at(.12,9.5))} ${P(at(.5,7.5))} L${P(at(.62,4.5))} L${P(at(.6,-4.5))} Q${P(at(.3,-6.2))} ${P(at(.02,-4.5))} Z`;
+ x+=(g("ribF")?`<path d="${rib}" fill="none" stroke="${GL}" stroke-width="3.4" opacity="${g("ribF")}" filter="url(#mglow)"/>`:"")+`<path d="${rib}" fill="url(#n_rib)"/>`;
+ for(const t of [.18,.3,.42])x+=`<path d="M${P(at(t,-3.5))} Q${P(at(t+.04,2))} ${P(at(t+.02,6))}" stroke="#b9765c" stroke-width=".6" fill="none" opacity=".55"/>`;
+ /* cou + crâne */
+ x+=`<path d="M${P(at(-.04,-1))} L${f1(p[0])},${f1(p[1]+4)}" stroke="${SK.neck}" stroke-width="2.6" stroke-linecap="round"/>`;
+ const hx=p[0],hy=p[1],fw=(p[2]<=p[0]+20)?1:1;
+ x+=`<ellipse cx="${f1(hx-1)}" cy="${f1(hy-1)}" rx="6.4" ry="6.6" fill="url(#n_skull)"/><path d="M${f1(hx+2)},${f1(hy+2)} Q${f1(hx+6.5*fw)},${f1(hy+2)} ${f1(hx+5.5*fw)},${f1(hy+6)} L${f1(hx+1)},${f1(hy+6.5)} Z" fill="url(#n_skull)"/><circle cx="${f1(hx+3.3*fw)}" cy="${f1(hy-.5)}" r="1.5" fill="#3a5566" opacity=".75"/>`;
+ x+=leg(9,10,N,"N")+arm(5,6,N,"N");
+ if(!behind)x+=propSVG(p,pr);
+ let defs="";for(const [k,c] of Object.entries(SK)){defs+=shade("n_"+k,c)+shade("f_"+k,c).replace(/<stop offset="1" stop-color="([^"]+)"/,'<stop offset="1" stop-color="#5a5f6a"')}
+ return `<svg viewBox="0 0 100 100" aria-hidden="true"><defs>${defs}<filter id="mglow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+ <rect x="0" y="86" width="100" height="14" fill="${GL}" opacity=".06"/><line x1="4" y1="93.5" x2="96" y2="93.5" stroke="${GL}" stroke-opacity=".3" stroke-width=".8"/>${x}</svg>`}
+
+const poseArr=k=>{const a=[...(POSES[k]||POSES.debout)];a[22]=a[22]||0;return a};
+function frameAt(id,now){const an=ANIM[id],fr=an[0],n=fr.length;if(n===1)return poseArr(fr[0]);const ph=((now/1000)%an[1])/an[1]*n,i=Math.floor(ph),f=ph-i,e=(1-Math.cos(Math.PI*f))/2,a=poseArr(fr[i]),b=poseArr(fr[(i+1)%n]);return a.map((v,j)=>v+(b[j]-v)*e)}
+const L=[["sq_gob","Squat gobelet"],["sq_dl","Soulevé de terre"],["bx_jab","Boxe : jab-direct"],["s_psoas","Fente basse (étirement)"],["m_chat","Chat-vache"],["b_halo","Halo au ballon"]];
+document.getElementById("l").innerHTML=L.map(([id,n])=>`<div class="card"><div class="st"><div class="big" data-a="${id}"></div><div class="sm"><div data-a="${id}"></div><span>taille appli</span></div></div><h2>${n}</h2></div>`).join("");
+const els=[...document.querySelectorAll("div[data-a]")];let last=0;
+function loop(t){if(t-last>33){last=t;for(const el of els){const id=el.dataset.a;el.innerHTML=skelSVG(frameAt(id,t),MPARSED[id],actAt(id,t),PROPX[id])}}requestAnimationFrame(loop)}requestAnimationFrame(loop);
+</script></body></html>

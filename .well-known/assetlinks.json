@@ -46,5 +46,29 @@
         "B3:85:A3:AE:E3:6B:22:CB:0E:80:D7:C6:5E:C1:1F:30:CB:A5:36:2D:0E:A0:39:20:E4:A5:FB:38:22:C3:8F:28"
       ]
     }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.frhubert78_ui.muscu",
+      "sha256_cert_fingerprints": [
+        "67:77:98:89:30:80:37:15:44:97:25:DC:28:61:13:24:A9:43:78:C8:FD:4E:24:A3:C2:3D:30:24:C6:D3:1B:B6"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.frhubert78_ui.muscusolo",
+      "sha256_cert_fingerprints": [
+        "DB:1A:C0:06:1A:80:FC:9B:E7:31:E0:0A:57:7B:91:AA:03:13:84:DA:A6:20:EF:EE:87:9B:E2:D7:43:64:96:05"
+      ]
+    }
   }
 ]

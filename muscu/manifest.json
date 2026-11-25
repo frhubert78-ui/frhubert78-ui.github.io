@@ -1,0 +1,33 @@
+{
+ "id": "/muscu/",
+ "name": "Carnet de muscu",
+ "short_name": "Muscu",
+ "description": "Suivi musculation : séances, charges, potentiel, progrès et mesures",
+ "lang": "fr",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#E3F4F8",
+ "theme_color": "#8CCFE0",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
